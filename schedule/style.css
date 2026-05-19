@@ -266,6 +266,7 @@ body {
 .date-text {
   font-size: 25px;
   font-weight: 600;
+  padding-bottom: 2px;
 }
 
 /* 일정 리스트 */
