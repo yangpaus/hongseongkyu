@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>일정 카드 에디터</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── 폼 패널 ── -->
+  <div id="form-panel">
+    <h2>일정 카드 편집</h2>
+
+    <div class="fsec">
+      <h3>기본 정보</h3>
+      <div class="row2">
+        <div class="fg">
+          <label>기호</label>
+          <input id="f-num" type="text" value="5" oninput="updatePreview()">
+        </div>
+        <div class="fg">
+          <label>정당명</label>
+          <input id="f-pty" type="text" value="진보당" oninput="updatePreview()">
+        </div>
+      </div>
+      <div class="fg">
+        <label>후보자명</label>
+        <input id="f-name" type="text" value="홍성규" oninput="updatePreview()">
+      </div>
+      <div class="row2">
+        <div class="fg">
+          <label>날짜</label>
+          <input id="f-date" type="text" value="5/20(수)" oninput="updatePreview()">
+        </div>
+        <div class="fg">
+          <label>D-day</label>
+          <input id="f-dday" type="text" value="D-14" oninput="updatePreview()">
+        </div>
+      </div>
+      <div class="fg">
+        <label>행사명 (헤더)</label>
+        <input id="f-evt" type="text" value="경기도지사 후보자대담" oninput="updatePreview()">
+      </div>
+    </div>
+
+    <div class="fsec">
+      <h3>헤더 이미지</h3>
+      <div class="fg">
+        <input type="file" id="f-img" accept="image/*" onchange="loadImage(this)">
+      </div>
+    </div>
+
+    <div class="fsec">
+      <h3>일정 항목</h3>
+      <div id="schedule-inputs"></div>
+      <button class="add-btn" onclick="addItem()">+ 일정 추가</button>
+    </div>
+
+    <div class="fsec">
+      <h3>후원 정보</h3>
+      <div class="fg">
+        <label>은행명</label>
+        <input id="f-bank" type="text" value="우리은행" oninput="updatePreview()">
+      </div>
+      <div class="fg">
+        <label>계좌번호</label>
+        <input id="f-acc" type="text" value="1005-104-916540" oninput="updatePreview()">
+      </div>
+      <div class="fg">
+        <label>후원회명</label>
+        <input id="f-org" type="text" value="경기도지사예비후보자 홍성규후원회" oninput="updatePreview()">
+      </div>
+    </div>
+
+    <button class="export-btn" id="export-btn" onclick="exportPng()">PNG 저장</button>
+  </div>
+
+  <!-- ── 미리보기 패널 ── -->
+  <div id="preview-panel">
+    <p>미리보기 (실제 PNG는 2배 해상도)</p>
+
+    <div id="schedule-card">
+
+      <!-- 헤더 카드 -->
+      <div class="header-card">
+        <div class="header-wrap" id="header-wrap">
+          <div class="header-placeholder" id="header-placeholder">이미지를 업로드하세요</div>
+          <img id="header-img" src="" alt="후보 사진">
+          <div class="party-badge" id="p-pty">진보당</div>
+          <div class="event-badge">
+            <div class="event-sub">제9회 전국동시지방선거</div>
+            <div class="event-title" id="p-evt">경기도지사<br>후보자대담</div>
+          </div>
+          <div class="candidate-bar">
+            <div class="candidate-number" id="p-num">5</div>
+            <div class="candidate-info">
+              <div class="candidate-party"><span id="p-pty2">진보당</span> 경기도지사 후보</div>
+              <div class="candidate-name" id="p-name">홍성규</div>
+            </div>
+            <div class="date-info">
+              <div><span class="d-badge" id="p-dday">D-14</span></div>
+              <div class="date-text"><span id="p-date">5/20(수)</span> 일정</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 일정 리스트 -->
+      <div class="schedule-list" id="p-schedule"></div>
+
+      <!-- 하단 후원 정보 -->
+      <div class="card-footer">
+        <span class="support-btn">♥ 후원안내</span>
+        <span class="support-text" id="p-footer"></span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  // ── 상태 ──
+  const scheduleItems = [
+    { time: '11:30', title: '수원방송 경기도지사 후보 대담', loc: '월드컵로 336' },
+    { time: '13:30', title: '민주노총 돌봄공공노조 정책 제안 기자회견', loc: '경기도의회 브리핑룸' },
+    { time: '19:00', title: '북한 내고향여성축구단 환영 및 수원FC위민 경기 관람', loc: '수원종합운동장' },
+  ];
+
+  // ── 일정 항목 폼 렌더링 ──
+  function renderScheduleInputs() {
+    const container = document.getElementById('schedule-inputs');
+    container.innerHTML = scheduleItems.map((item, i) => `
+      <div class="sif">
+        <button class="remove-btn" onclick="removeItem(${i})">✕</button>
+        <div class="fg">
+          <label>시간</label>
+          <input type="text" value="${item.time}" oninput="scheduleItems[${i}].time = this.value; updatePreview()">
+        </div>
+        <div class="fg">
+          <label>일정명</label>
+          <input type="text" value="${item.title}" oninput="scheduleItems[${i}].title = this.value; updatePreview()">
+        </div>
+        <div class="fg">
+          <label>장소</label>
+          <input type="text" value="${item.loc}" oninput="scheduleItems[${i}].loc = this.value; updatePreview()">
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function addItem() {
+    scheduleItems.push({ time: '', title: '', loc: '' });
+    renderScheduleInputs();
+    updatePreview();
+  }
+
+  function removeItem(i) {
+    scheduleItems.splice(i, 1);
+    renderScheduleInputs();
+    updatePreview();
+  }
+
+  // ── 미리보기 업데이트 ──
+  function updatePreview() {
+    const val = id => document.getElementById(id).value;
+
+    document.getElementById('p-pty').textContent  = val('f-pty');
+    document.getElementById('p-pty2').textContent = val('f-pty');
+    document.getElementById('p-name').textContent = val('f-name');
+    document.getElementById('p-num').textContent  = val('f-num');
+    document.getElementById('p-date').textContent = val('f-date');
+    document.getElementById('p-dday').textContent = val('f-dday');
+
+    const evtWords = val('f-evt').trim().split(' ');
+    const mid = Math.ceil(evtWords.length / 2);
+    document.getElementById('p-evt').innerHTML =
+      evtWords.slice(0, mid).join(' ') + '<br>' + evtWords.slice(mid).join(' ');
+
+    document.getElementById('p-schedule').innerHTML = scheduleItems.map(item => `
+      <div class="schedule-row">
+        <div class="schedule-time">${item.time}</div>
+        <div class="schedule-details">
+          <div class="schedule-title">${item.title}</div>
+          ${item.loc ? `<div class="schedule-location">&#x1F4CD; ${item.loc}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('p-footer').innerHTML =
+      `${val('f-bank')} | ${val('f-acc')}<br>(${val('f-org')})`;
+  }
+
+  // ── 이미지 로드 ──
+  function loadImage(input) {
+    if (!input.files || !input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('header-img');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.getElementById('header-placeholder').style.display = 'none';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+
+  // ── PNG 내보내기 ──
+  async function exportPng() {
+    const btn = document.getElementById('export-btn');
+    btn.textContent = '저장 중...';
+    btn.disabled = true;
+
+    try {
+      const card = document.getElementById('schedule-card');
+      const canvas = await html2canvas(card, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#dde9f2',
+      });
+      const a = document.createElement('a');
+      a.download = `일정카드_${document.getElementById('f-date').value || 'export'}.png`;
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    } catch (e) {
+      alert('저장 실패: ' + e.message);
+    }
+
+    btn.textContent = 'PNG 저장';
+    btn.disabled = false;
+  }
+
+  // ── 초기화 ──
+  renderScheduleInputs();
+  updatePreview();
+</script>
+
+</body>
+</html>
