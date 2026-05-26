@@ -13,5 +13,5 @@
 로컬 서버를 실행해서 확인할 수 있습니다.
 
 ## 링크
--라이브 사이트: [https://hongseongkyu2026.github.io/hongseongkyu]
--진보당 공식 홈페이지: [http://jinboparty.com/]
+- 라이브 사이트: [https://hongseongkyu2026.github.io/hongseongkyu]
+- 진보당 공식 홈페이지: [http://jinboparty.com/]
