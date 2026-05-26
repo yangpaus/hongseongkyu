@@ -9,9 +9,11 @@
 └── schedule/        # 후보 일정 관리 템플릿
 ```
 
+
 ## 실행 방법
 별도의 빌드 과정 없이 `index.html`을 브라우저에서 열거나,
 로컬 서버를 실행해서 확인할 수 있습니다.
+
 
 ## 사용 기술
 
@@ -38,6 +40,11 @@
 | Canvas API | 크롭된 이미지 처리 | `schedule/index.html` |
 | D-day 자동 계산 | 선거일(6/3) 기준 날짜 표시 | `schedule/index.html` |
 
+
 ## 링크
 - [라이브 사이트](https://hongseongkyu2026.github.io/hongseongkyu)
 - [진보당 공식 홈페이지](http://jinboparty.com)
+
+
+## 만든 사람
+- 정의석, 2026
