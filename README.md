@@ -8,10 +8,10 @@
 ├── img/             # 이미지 파일
 └── schedule/        # 일정 관련 파일
 
-##실행 방법
+## 실행 방법
 별도의 빌드 과정 없이 `index.html`을 브라우저에서 열거나,
 로컬 서버를 실행해서 확인할 수 있습니다.
 
-##링크
+## 링크
 -라이브 사이트: [https://hongseongkyu2026.github.io/hongseongkyu]
 -진보당 공식 홈페이지: [http://jinboparty.com/]
