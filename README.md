@@ -18,7 +18,8 @@
 ### 라이브러리
 | 라이브러리 | 버전 | 용도 |
 |---|---|---|
-| [Swiper.js](https://swiperjs.com/) | v11 | 이미지 슬라이더 |
+| [Swiper.js](https://swiperjs.com/) | v11 | `index.html` | 이미지 슬라이더 |
+| [html2canvas](https://html2canvas.hertzen.com/) | v1.4.1 | `schedule/index.html` | `form`에 입력한 내용을 PNG파일로 출력 
 | [Pretendard](https://github.com/orioncactus/pretendard) | v1.3.9 | 웹폰트 |
 
 ### 외부 API
@@ -27,9 +28,15 @@
 | [rss2json](https://rss2json.com/) | 네이버 블로그 RSS를 JSON으로 변환해 보도자료 목록 표시 |
 
 ### Vanilla JS
-- **IntersectionObserver** - 스크롤 위치에 따라 사이드바 메뉴 활성화
-- **hamburger 메뉴** - 모바일 환경에서 사이드바 토글
-- **Fetch API** - 블로그 RSS 피드 비동기 로딩
+| 기능 | 설명 | 위치 |
+|---|---|---|
+| IntersectionObserver | 스크롤 위치에 따라 사이드바 메뉴 활성화 | `index.html` |
+| Hamburger 메뉴 | 모바일 환경에서 사이드바 토글 | `index.html` |
+| Fetch API | 블로그 RSS 피드 비동기 로딩 | `index.html` |
+| Drag and Drop API | 일정 항목 순서 변경 | `schedule/index.html` |
+| FileReader API | 로컬 이미지 불러오기 및 16:9 자동 크롭 | `schedule/index.html` |
+| Canvas API | 크롭된 이미지 처리 | `schedule/index.html` |
+| D-day 자동 계산 | 선거일(6/3) 기준 날짜 표시 | `schedule/index.html` |
 
 ## 링크
 - [라이브 사이트](https://hongseongkyu2026.github.io/hongseongkyu)
